@@ -1,17 +1,245 @@
 ---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { projects } from "../data/projects";
 
+const allNotes = await getCollection("notes");
+const recentNotes = allNotes
+  .sort((a, b) => b.data.tended.getTime() - a.data.tended.getTime())
+  .slice(0, 5);
+
+const featuredProjects = projects.filter((p) => p.featured);
+
+function formatDate(d: Date) {
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base title="Swarnav Mukherjee">
+  <div class="hero">
+    <h1 class="name">Swarnav Mukherjee</h1>
+    <!-- TODO: write your tagline — one or two sentences on who you are and what you build -->
+    <p class="tagline">Software engineer. Builder of things. <!-- TODO: finish this --></p>
+    <nav class="hero-nav">
+      <a href="/projects">Projects</a>
+      <a href="/garden">Garden</a>
+      <a href="/about">About</a>
+      <a href="/resume.pdf" download class="hero-resume">Download résumé ↓</a>
+    </nav>
+  </div>
+
+  <hr />
+
+  <section class="home-section">
+    <h2 class="section-heading">Selected work</h2>
+    <ul class="project-list">
+      {featuredProjects.map((p) => (
+        <li class="project-item">
+          <div class="project-header">
+            <span class="project-title">{p.title}</span>
+            <span class="project-stack">{p.stack.slice(0, 3).join(" · ")}</span>
+          </div>
+          <p class="project-desc">{p.description}</p>
+          <div class="project-links">
+            {p.links.map((l) => (
+              <a href={l.url} class="project-link" target="_blank" rel="noopener noreferrer">
+                {l.label} ↗
+              </a>
+            ))}
+          </div>
+        </li>
+      ))}
+    </ul>
+    <a href="/projects" class="see-all">All projects →</a>
+  </section>
+
+  <hr />
+
+  <section class="home-section">
+    <h2 class="section-heading">Latest from the garden</h2>
+    <ul class="note-list">
+      {recentNotes.map((note) => (
+        <li class="note-item">
+          <a href={`/notes/${note.id}`} class="note-link">{note.data.title}</a>
+          <span class="note-meta">
+            <span class={`stage-dot ${note.data.growth}`}></span>
+            <span class="note-date">{formatDate(note.data.tended)}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+    <a href="/garden" class="see-all">Browse the garden →</a>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    margin-bottom: 0.5rem;
+  }
+
+  .name {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .tagline {
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-nav {
+    display: flex;
+    gap: 1.25rem;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.875rem;
+  }
+
+  .hero-nav a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .hero-nav a:hover {
+    color: var(--accent);
+  }
+
+  .hero-resume {
+    color: var(--accent) !important;
+  }
+
+  .home-section {
+    margin-bottom: 0.5rem;
+  }
+
+  .section-heading {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 0.75rem;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── Featured projects ── */
+  .project-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .project-item {
+    border-left: 2px solid var(--border);
+    padding-left: 1rem;
+  }
+
+  .project-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .project-title {
+    font-family: Georgia, 'Palatino Linotype', serif;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--text);
+  }
+
+  .project-stack {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .project-desc {
+    font-size: 0.9rem;
+    color: var(--text);
+    margin: 0 0 0.5rem;
+  }
+
+  .project-links {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .project-link {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.82rem;
+    text-decoration: none;
+    color: var(--accent);
+  }
+
+  .project-link:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Recent notes ── */
+  .note-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+
+  .note-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .note-item:last-child {
+    border-bottom: none;
+  }
+
+  .note-link {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    flex: 1;
+  }
+
+  .note-link:hover {
+    color: var(--accent);
+  }
+
+  .note-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .note-date {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.78rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ── See-all links ── */
+  .see-all {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--accent);
+  }
+
+  .see-all:hover {
+    text-decoration: underline;
+  }
+</style>

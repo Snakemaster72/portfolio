@@ -1,0 +1,69 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="About — Digital Garden">
+  <article class="about">
+    <h1>About</h1>
+
+    <!-- TODO: Write a short intro — who you are, what draws you to keeping a digital garden -->
+    <section>
+      <p>
+        Hi, I'm Swarnav.
+        <!-- TODO: A sentence or two about yourself — background, interests, what you work on. -->
+      </p>
+      <p>
+        <!-- TODO: Why a garden rather than a blog? What does this space mean to you? -->
+      </p>
+    </section>
+
+    <hr />
+
+    <!-- TODO: What are you currently doing, reading, or thinking about? Update this periodically. -->
+    <section>
+      <h2>Now</h2>
+      <p>
+        <!-- TODO: Current projects, what you're learning, where you're based, etc. -->
+      </p>
+    </section>
+
+    <hr />
+
+    <!-- TODO: Links to your presence elsewhere on the web -->
+    <section>
+      <h2>Elsewhere</h2>
+      <ul class="link-list">
+        <li><a href="https://github.com/snakemaster72">GitHub</a></li>
+        <!-- TODO: Add more — email, Mastodon, Twitter/X, LinkedIn, personal site, etc. -->
+      </ul>
+      <a href="/resume.pdf" download class="dl-resume">Download résumé ↓</a>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .about h1 {
+    margin-bottom: 1.5rem;
+  }
+
+  .about section {
+    margin: 1.5rem 0;
+  }
+
+  .link-list {
+    padding-left: 1.25rem;
+    line-height: 2.2;
+    margin: 0 0 1rem;
+  }
+
+  .dl-resume {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.875rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .dl-resume:hover {
+    text-decoration: underline;
+  }
+</style>

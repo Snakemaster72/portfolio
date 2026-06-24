@@ -1,0 +1,46 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+
+// tells astro build one page per note,
+// I don't know , used for routing every page dynamically
+// without handling links manually
+
+export async function getStaticPaths() {
+  const notes = await getCollection("notes");
+  return notes.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<!-- template -->
+ <!-- an article template for every note -->
+  <Base title={entry.data.title}>
+<article>
+  <h1>{entry.data.title}</h1>
+
+  <p class="meta">
+    <span class={`stage-dot ${entry.data.growth}`}></span>
+    <span class={`growth-label ${entry.data.growth}`}>{entry.data.growth}</span>
+    &middot; planted {entry.data.planted.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+    &middot; tended {entry.data.tended.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+  </p>
+
+  {entry.data.topics && entry.data.topics.length > 0 && (
+    <p class="topics">
+      {entry.data.topics.map((t) => (
+        <a href={`/topics/${encodeURIComponent(t)}`} class="topic">{t}</a>
+      ))}
+    </p>
+  )}
+
+  <hr />
+
+  <Content />
+</article>
+</Base>

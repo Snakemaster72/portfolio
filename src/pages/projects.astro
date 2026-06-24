@@ -1,0 +1,125 @@
+---
+import Base from "../layouts/Base.astro";
+import { projects } from "../data/projects";
+---
+
+<Base title="Projects — Swarnav">
+  <h1>Projects</h1>
+  <p class="page-intro">Things I've built — full list.</p>
+
+  <ul class="project-list">
+    {projects.map((p) => (
+      <li class="project-card">
+        <div class="project-header">
+          <h2 class="project-title">{p.title}</h2>
+          {p.featured && <span class="featured-badge">featured</span>}
+        </div>
+
+        <p class="project-desc">{p.description}</p>
+
+        <ul class="stack-list">
+          {p.stack.map((s) => <li class="stack-tag">{s}</li>)}
+        </ul>
+
+        {p.links.length > 0 && (
+          <div class="project-links">
+            {p.links.map((l) => (
+              <a href={l.url} class="project-link" target="_blank" rel="noopener noreferrer">
+                {l.label} ↗
+              </a>
+            ))}
+          </div>
+        )}
+      </li>
+    ))}
+  </ul>
+</Base>
+
+<style>
+  .page-intro {
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 0;
+    margin-bottom: 2rem;
+  }
+
+  .project-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .project-card {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+  }
+
+  .project-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .project-title {
+    font-size: 1.1rem;
+    margin: 0;
+    font-family: Georgia, 'Palatino Linotype', serif;
+  }
+
+  .featured-badge {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(74, 122, 90, 0.35);
+    border-radius: 9999px;
+    padding: 0.1rem 0.5rem;
+  }
+
+  .project-desc {
+    color: var(--text);
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .stack-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .stack-tag {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.1rem 0.45rem;
+  }
+
+  .project-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .project-link {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--accent);
+  }
+
+  .project-link:hover {
+    text-decoration: underline;
+  }
+</style>

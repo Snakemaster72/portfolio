@@ -1,0 +1,114 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+
+const allNotes = await getCollection("notes");
+
+const stages = ["seedling", "budding", "evergreen"] as const;
+
+const grouped = stages
+  .map((stage) => ({
+    stage,
+    notes: allNotes
+      .filter((n) => n.data.growth === stage)
+      .sort((a, b) => b.data.tended.getTime() - a.data.tended.getTime()),
+  }))
+  .filter((g) => g.notes.length > 0);
+
+function formatDate(d: Date) {
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+---
+
+<Base title="Garden — Swarnav">
+  <div class="intro">
+    <h1 class="site-title">The Garden</h1>
+    <p class="site-blurb">Notes grouped by growth stage — some seedlings, some in bloom.</p>
+  </div>
+
+  {grouped.map(({ stage, notes }) => (
+    <section class="stage-section">
+      <h2 class="stage-heading">
+        <span class={`stage-dot ${stage}`}></span>
+        <span class={`growth-label ${stage}`}>{stage}</span>
+      </h2>
+      <ul class="note-list">
+        {notes.map((note) => (
+          <li class="note-item">
+            <a href={`/notes/${note.id}`} class="note-link">{note.data.title}</a>
+            <span class="note-date">{formatDate(note.data.tended)}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Base>
+
+<style>
+  .intro {
+    margin-bottom: 2.5rem;
+  }
+
+  .site-title {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .site-blurb {
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 0;
+  }
+
+  .stage-section {
+    margin-bottom: 2.25rem;
+  }
+
+  .stage-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .note-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .note-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .note-item:last-child {
+    border-bottom: none;
+  }
+
+  .note-link {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1rem;
+    flex: 1;
+  }
+
+  .note-link:hover {
+    color: var(--accent);
+  }
+
+  .note-date {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.8rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+</style>
